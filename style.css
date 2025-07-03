@@ -44,11 +44,20 @@ section h1 {
 }
 .category {
     display: flex;
-    flex-wrap: wrap;
+    flex-wrap: nowrap;
+    overflow-x: auto;
     gap: 20px;
-    margin-bottom: 50px;
+    padding-bottom: 10px;
+    margin-bottom: 30px;
+    scroll-behavior: smooth;
+    scrollbar-width: none;
+
+}
+.category::-webkit-scrollbar {
+    display: none; 
 }
 .movies {
+    flex: 0 0 auto;
     background-color: #1e1e1e;
     border-radius: 10px;
     overflow: hidden;
@@ -64,21 +73,13 @@ section h1 {
     height: auto;
     border-bottom: 2px solid #333;
 }
-.movies h2{
-    font-size: 1rem;
-    margin: 10px;
-    color: #fff;
-}
+.movies h2,
 .movies h3 {
     font-size: 1rem;
     margin: 10px;
     color: #fff;
 }
-.movies p {
-    font-size: 0.85rem;
-    margin: 0 10px 10px;
-    color: #ccc;
-}
+.movies p,
 .movies h4 {
     font-size: 0.85rem;
     margin: 0 10px 10px;
@@ -93,12 +94,12 @@ section h1 {
         max-width: 100%;
     }
     .movies {
-        width: 45%;
+        width: 150px;
     }
 }
 @media (max-width: 480px) {
     .movies {
-        width: 100%;
+        width: 130px;
     }
     #banner h1 {
         font-size: 1.5rem;
