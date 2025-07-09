@@ -24,6 +24,7 @@ body {
     font-size: 18px;
     border-radius: 30px;
     padding: 0px 0 0 25px;
+    margin: 0px 45px 0px 0px;
 }
 .header {
     width: 100%;
@@ -31,7 +32,7 @@ body {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    background-color: black;
+    background-color: rgba(0, 0, 0, 0.429);
     z-index: 3;
     position: sticky;
     top: 0px;
@@ -76,7 +77,7 @@ section h1 {
     overflow-x: auto;
     gap: 20px;
     padding-bottom: 10px;
-    margin-bottom: 30px;
+    margin: 0px 12px 30px 12px;
     scroll-behavior: smooth;
     scrollbar-width: none;
 

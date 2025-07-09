@@ -14,7 +14,7 @@ const urls = {
     comedyMovies: BASE_URL + "/discover/movie?api_key=" + API_KEY + "&with_genres=35",
     horrorMovies: BASE_URL + "/discover/movie?api_key=" + API_KEY + "&with_genres=27",
     romanticMovies: BASE_URL + "/discover/movie?api_key=" + API_KEY + "&with_genres=10749",
-    documentaries: BASE_URL + "/discover/movie?api_key=" + API_KEY + "&with_genres=99"
+    documentaries: BASE_URL + "/discover/movie?api_key=" + API_KEY + "&with_genres=99",
 };
 
 let allMovies = [];
@@ -46,27 +46,20 @@ function setRandomBanner(movies) {
 }
 
 async function fetchAllCategories() {
-    try {
-        const responses = await Promise.all(Object.values(urls).map(url => fetch(url)));
-        const data = await Promise.all(responses.map(res => res.json()));
+    const data = await Promise.all(Object.values(urls).map(url => fetch(url).then(res => res.json())));
+    const categories = Object.keys(urls);
 
-        const categories = Object.keys(urls);
+    categories.forEach((category, index) => {
+        const results = data[index].results;
+        if (!results) return;
 
-        categories.forEach((category, index) => {
-            const results = data[index].results;
-            if (!results) return;
+        allMovies = allMovies.concat(results);
 
-            allMovies = allMovies.concat(results);
-
-            if (category === "popular") {
-                setRandomBanner(results);
-            }
-            showData(results, category);
-        });
-
-    } catch (error) {
-        console.error("Error fetching movie categories:", error);
-    }
+        if (category === "popular") {
+            setRandomBanner(results);
+        }
+        showData(results, category);
+    });
 }
 
 function showData(movies, category = "") {
@@ -94,18 +87,17 @@ function showData(movies, category = "") {
         const imageurl = "https://image.tmdb.org/t/p/w500";
         img.src = imageurl + movie.poster_path;
 
-        const name = document.createElement("h3")
-        name.textContent = "Name : " + movie.title
+        const name = document.createElement("h3");
+        name.textContent = "Name : " + movie.title;
 
         const language = document.createElement("p");
         language.textContent = "Language: " + movie.original_language;
 
-        const date = document.createElement("h4")
-        date.innerText = movie.release_date
-
+        const date = document.createElement("h4");
+        date.innerText = movie.release_date;
 
         anchor.append(img);
-        main.append(anchor, name, language,date);
+        main.append(anchor, name, language, date);
         container.append(main);
     });
 
@@ -113,28 +105,30 @@ function showData(movies, category = "") {
 }
 
 function handleFilters() {
-  const searchTerm = search.value.toLowerCase();
+    const searchTerm = search.value.toLowerCase();
 
-  if (searchTerm === "") {
+    if (searchTerm === "") {
+        section.innerHTML = "";
+        allMovies = [];
+        fetchAllCategories();
+        return;
+    }
+
+      const filtered = allMovies.filter((movie, index, self) => {
+        const title = movie.title?.toLowerCase() || "";
+        return title.includes(searchTerm) &&
+            index === self.findIndex(m => m.id === movie.id);
+    });
+
     section.innerHTML = "";
-    allMovies = [];
-    fetchAllCategories();
-    return;
-  }
 
-  const filtered = allMovies.filter(movie => {
-    const title = movie.title?.toLowerCase() || "";
-    return title.includes(searchTerm);
-  });
-
-  section.innerHTML = "";
-
-  if (filtered.length === 0) {
-    section.innerHTML = "<h2>No movies match your search.</h2>";
-  } else {
-    showData(filtered);
-  }
+    if (filtered.length === 0) {
+        section.innerHTML = "<h2>No movies match your search.</h2>";
+    } else {
+        showData(filtered, "Search Results");
+    }
 }
+
 search.addEventListener("input", handleFilters);
 
 fetchAllCategories();
